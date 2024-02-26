@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/cloudvendor")
-public class CloudVendorApiService {
+public class CloudVendorController {
     CloudVendor cloudVendor;
     private final List<CloudVendor> cloudVendorList = new ArrayList<>();
 
