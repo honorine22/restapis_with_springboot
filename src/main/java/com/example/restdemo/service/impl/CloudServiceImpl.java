@@ -16,7 +16,6 @@ public class CloudServiceImpl implements CloudVendorService {
    public CloudServiceImpl(CloudVendorRepository cloudVendorRepository){
        this.cloudVendorRepository = cloudVendorRepository;
    }
-
     @Override
     public String createCloudVendor(CloudVendor cloudVendor) {
        cloudVendorRepository.save(cloudVendor);
@@ -33,7 +32,6 @@ public class CloudServiceImpl implements CloudVendorService {
             existingVendor.setVendorName(cloudVendor.getVendorName());
             existingVendor.setVendorAddress(cloudVendor.getVendorAddress());
             existingVendor.setVendorPhoneNumber(cloudVendor.getVendorPhoneNumber());
-
             cloudVendorRepository.save(existingVendor);
             return "Success";
         } else {
@@ -43,8 +41,12 @@ public class CloudServiceImpl implements CloudVendorService {
 
     @Override
     public String deleteCloudVendor(String vendorId) {
-        cloudVendorRepository.deleteById(vendorId);
-        return "Success";
+        if(cloudVendorRepository.findById(vendorId).isPresent()){
+            cloudVendorRepository.deleteById(vendorId);
+            return "Success";
+        } else {
+            return "Cloud Vendor with ID " + vendorId + " not found";
+        }
     }
 
     @Override

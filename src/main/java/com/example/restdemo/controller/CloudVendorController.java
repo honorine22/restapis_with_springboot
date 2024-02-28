@@ -1,6 +1,7 @@
 package com.example.restdemo.controller;
 
 import com.example.restdemo.model.CloudVendor;
+import com.example.restdemo.service.CloudVendorService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -9,52 +10,33 @@ import java.util.List;
 @RestController
 @RequestMapping("/cloudvendor")
 public class CloudVendorController {
-    CloudVendor cloudVendor;
-    private final List<CloudVendor> cloudVendorList = new ArrayList<>();
-
-    @GetMapping("")
-    public List<CloudVendor> getCloudVendors() {
-            return cloudVendorList;
+    CloudVendorService cloudVendorService;
+    public CloudVendorController(CloudVendorService cloudVendorService) {
+        this.cloudVendorService = cloudVendorService;
     }
 
     @GetMapping("/{vendorId}")
-    public CloudVendor getCloudVendorById(@PathVariable String vendorId) {
-        for (CloudVendor vendor : cloudVendorList){
-            if(vendor.getVendorId().equals(vendorId)){
-                return vendor;
-            }
-        }
-        return null;
+    public CloudVendor getCloudVendorById(@PathVariable("vendorId") String vendorId) {
+       return cloudVendorService.viewCloudVendor(vendorId);
+    }
+
+    @GetMapping("")
+    public List<CloudVendor> getCloudVendors() {
+        return cloudVendorService.viewAllCloudVendors();
     }
 
     @PostMapping
     public String createCloudVendor(@RequestBody CloudVendor cloudVendor) {
-        cloudVendorList.add(cloudVendor);
-        return "Cloud Vendor Created Successfully";
+       return cloudVendorService.createCloudVendor(cloudVendor);
     }
 
     @PutMapping("/{vendorId}")
     public String updateCloudVendor(@PathVariable String vendorId, @RequestBody CloudVendor cloudVendor) {
-        for (int i = 0; i < cloudVendorList.size(); i++){
-            if(cloudVendorList.get(i).getVendorId().equals(vendorId)){
-               cloudVendorList.set(i, cloudVendor);
-                return "Cloud Vendor Updated Successfully";
-            }
-        }
-        return "Vendor not found";
+      return  cloudVendorService.updateCloudVendor(vendorId, cloudVendor);
     }
 
     @DeleteMapping("/{vendorId}")
     public String deleteCloudVendor(@PathVariable String vendorId) {
-        if(vendorId!= null){
-            for (int i = 0; i<cloudVendorList.size();i++){
-                CloudVendor deletedVendor = cloudVendorList.get(i);
-                if(deletedVendor.getVendorId().equals(vendorId)){
-                    cloudVendorList.remove(deletedVendor);
-                    return "Cloud Vendor Deleted Successfully";
-                }
-            }
-        }
-        return "Vendor not found";
+       return cloudVendorService.deleteCloudVendor(vendorId);
     }
 }
